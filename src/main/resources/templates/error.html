@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/bootstrap.min.css}">
+
+        <title id="title" th:text="${error}"></title>
+    </head>
+    <body class="p-3 mb-2 bg-light text-black">
+        <div id="msg-container" class="container justify-content-center w-50 p-3" style="margin-top: 5em;">
+            <div id="error-msg" class="alert alert-danger fill-parent">
+                <h1 class="display-5 text-center" id="errorTitle" th:text="${error}"></h1>
+                <div class="text-center" id="error-text" th:utext="${message}"></div>
+                <div class="text-center">
+                    <span id="error-msg-0" th:text="${clickToContinue0}"></span>
+                    <a id="error-continue-link" th:href="@{/home}" th:text="${clickToContinue1}"></a>
+                    <span id="error-msg-2" th:text="${clickToContinue2}"></span>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

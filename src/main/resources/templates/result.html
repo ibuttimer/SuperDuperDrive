@@ -6,22 +6,30 @@
 
         <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/bootstrap.min.css}">
 
-        <title>Result</title>
+        <title id="title" th:text="${result}"></title>
     </head>
     <body class="p-3 mb-2 bg-light text-black">
-        <div class="container justify-content-center w-50 p-3" style="margin-top: 5em;">
-            <div class="alert alert-success fill-parent">
-                <h1 class="display-5">Success</h1>
-                <span>Your changes were successfully saved. Click <a>here</a> to continue.</span>
+        <div id="msg-container" class="container justify-content-center w-50 p-3" style="margin-top: 5em;">
+            <div id="success-msg" th:if="${actionResult.isSuccess()}" class="alert alert-success fill-parent">
+                <h1 class="display-5" id="successTitle" th:text="${success}"></h1>
+                <span id="success-text" th:text="${actionResult.message}"></span>
+                <span id="change-msg-0" th:text="${clickToContinue0}"></span>
+                <a id="change-success-link" th:href="@{/home(tab=${actionResult.tab},action=select)}" th:text="${clickToContinue1}"></a>
+                <span id="change-msg-2" th:text="${clickToContinue2}"></span>
             </div>
-            <div class="alert alert-danger fill-parent">
-                <h1 class="display-5">Error</h1>
-                <span>Your changes were not saved. Click <a>here</a> to continue.</span>
+            <div id="not-saved-msg" th:if="${actionResult.isNotSaved()}" class="alert alert-warning fill-parent">
+                <h1 class="display-5" id="notSavedTitle" th:text="${warning}"></h1>
+                <span id="notsaved-text" th:text="${actionResult.message}"></span>
+                <span id="notsaved-msg-0" th:text="${clickToContinue0}"></span>
+                <a id="change-notsaved-link" th:href="@{/home(tab=${actionResult.tab},action=select)}" th:text="${clickToContinue1}"></a>
+                <span id="notsaved-msg-2" th:text="${clickToContinue2}"></span>
             </div>
-            <div class="alert alert-danger fill-parent">
-                <h1 class="display-5">Error</h1>
-                <span>Example Error Message</span>
-                <span>Click <a>here</a> to continue.</span>
+            <div id="error-msg" th:if="${actionResult.isError()}" class="alert alert-danger fill-parent">
+                <h1 class="display-5" id="errorTitle" th:text="${error}"></h1>
+                <span id="error-text" th:utext="${actionResult.message}"></span>
+                <span id="error-msg-0" th:text="${clickToContinue0}"></span>
+                <a id="error-continue-link" th:href="@{/home(tab=${actionResult.tab},action=select)}" th:text="${clickToContinue1}"></a>
+                <span id="error-msg-2" th:text="${clickToContinue2}"></span>
             </div>
         </div>
     </body>

@@ -31,3 +31,6 @@ target/
 
 ### MacOs ###
 .DS_Store
+
+/debug.log
+/externalFiles/
