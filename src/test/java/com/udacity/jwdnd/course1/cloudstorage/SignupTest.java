@@ -45,14 +45,15 @@ public abstract class SignupTest extends AbstractSeleniumTest {
 
     public static Map<String, WebElement> signupUserAndTest(SignupPage signupPage, AbstractSeleniumTest test,
                                                             List<ElementSpec> elementSpecs,
-                                                            User user) {
+                                                            User user) throws InterruptedException {
         // sign up
         signupPage.signup(user);
+        test.pause("defaultLoadTimeout", 2);
 
         return testElements(test, elementSpecs);
     }
 
-    public static Map<String, WebElement> signupUserAndTestSuccess(SignupPage signupPage, AbstractSeleniumTest test, User user) {
+    public static Map<String, WebElement> signupUserAndTestSuccess(SignupPage signupPage, AbstractSeleniumTest test, User user) throws InterruptedException {
         return signupUserAndTest(signupPage, test,
                 SignupPage.setListTimeouts(
                     concatLists(
@@ -73,7 +74,7 @@ public abstract class SignupTest extends AbstractSeleniumTest {
         }
     }
 
-    public static Map<String, WebElement> signupUserAndTestFailure(SignupPage signupPage, AbstractSeleniumTest test, User user) {
+    public static Map<String, WebElement> signupUserAndTestFailure(SignupPage signupPage, AbstractSeleniumTest test, User user) throws InterruptedException {
         return signupUserAndTest(signupPage, test,
                 SignupPage.setListTimeouts(
                     List.of(

@@ -78,7 +78,7 @@ public abstract class CredentialsTest extends AbstractHomeTest {
     }
 
     private CredentialsTab selectTab() throws InterruptedException {
-        // select notes tab
+        // select credentials tab
         CredentialsTab tab = CredentialsTab.getInstance(driver);
         tab.selectCredentialsTab();
 

@@ -322,7 +322,17 @@ public class AbstractSeleniumTest implements ITestResource {
      * @throws InterruptedException – see {@link Thread()#pause(int)}
      */
     protected void pause(String timeout) throws InterruptedException {
-        pause(getResourceInt(timeout));
+        pause(timeout, 1);
+    }
+
+    /**
+     * Pause test for specified time
+     * @param timeout – resource key for the length of time to sleep in milliseconds
+     * @param multiplier - number of multiples of timeout to wait
+     * @throws InterruptedException – see {@link Thread()#pause(int)}
+     */
+    protected void pause(String timeout, int multiplier) throws InterruptedException {
+        pause(getResourceInt(timeout) * multiplier);
     }
 
     /**
@@ -360,6 +370,17 @@ public class AbstractSeleniumTest implements ITestResource {
                 });
 
         return allHandles;
+    }
+
+    protected URI getExternalUri(String url, String query) {
+        URI uri = null;
+        try {
+            uri = new URI(urlWithQuery(url, query));
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            fail("Invalid test Uri for " + url + ", " + query);
+        }
+        return uri;
     }
 
     protected URI getUri(String url, String query) {

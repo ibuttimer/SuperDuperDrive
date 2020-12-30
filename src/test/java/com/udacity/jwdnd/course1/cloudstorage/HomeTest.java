@@ -1,6 +1,5 @@
 package com.udacity.jwdnd.course1.cloudstorage;
 
-import com.udacity.jwdnd.course1.cloudstorage.model.SignupPage;
 import org.junit.jupiter.api.*;
 
 import java.net.URI;
@@ -8,11 +7,14 @@ import java.util.List;
 
 import static com.udacity.jwdnd.course1.cloudstorage.LoginTest.*;
 import static com.udacity.jwdnd.course1.cloudstorage.config.UrlFactory.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class HomeTest extends AbstractHomeTest {
 
     @BeforeEach
     public void beforeEach() throws InterruptedException {
+        clearUsers();
+
         SignupTest.signupUsersAndTestSuccess(this, List.of(LOGIN_USER_0, LOGIN_USER_1));
     }
 
@@ -62,9 +64,11 @@ public abstract class HomeTest extends AbstractHomeTest {
         for (String url : List.of(
                 LOGOUT_URL, HOME_URL, ERROR_URL, GET_CREDENTIALS_PASSWORD_URL, UPLOAD_URL, DOWNLOAD_URL)) {
 
-            URI invalid = getUri(url, "");
+            gotoExternalUrl();
 
-            getLinkAndCheckLoginRedirect(invalid);
+            URI uri = getUri(getUrl(url), "");
+
+            getLinkAndCheckLoginRedirect(uri);
         }
 
         pause();
@@ -80,10 +84,24 @@ public abstract class HomeTest extends AbstractHomeTest {
 
         logoutUser();
 
-        URI invalid = getUri(HOME_URL, "");
+        waitForLoginAndTestLogoutSuccess(this);
 
-        getLinkAndCheckLoginRedirect(invalid);
+        gotoExternalUrl();
+
+        URI uri = getUri(getUrl(HOME_URL), "");
+
+        getLinkAndCheckLoginRedirect(uri);
 
         pause();
+    }
+
+    private void gotoExternalUrl() throws InterruptedException {
+
+        final String externalUrl = "https://www.google.com/";
+        URI uri = getExternalUri(externalUrl, "");
+        driver.get(uri.toString());
+        pause("defaultLoadTimeout");
+
+        assertEquals(driver.getCurrentUrl(), externalUrl);
     }
 }
