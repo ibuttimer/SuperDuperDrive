@@ -14,12 +14,9 @@ import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.util.ResourceUtils;
-import org.springframework.web.util.UriBuilder;
-import org.springframework.web.util.UriUtils;
 
 import java.io.*;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -139,12 +136,11 @@ public abstract class FileTest extends AbstractHomeTest {
     }
 
     @BeforeEach
-    public void beforeEach() {
+    public void beforeEach() throws InterruptedException {
         clearTable(fileService);
         clearUsers();
 
-        SignupPage signupPage = SignupTest.getSignupPage(driver, this);
-        SignupTest.signupUsersAndTestSuccess(signupPage, this, List.of(LOGIN_USER_0, LOGIN_USER_1));
+        SignupTest.signupUsersAndTestSuccess(this, List.of(LOGIN_USER_0, LOGIN_USER_1));
     }
 
     @AfterEach

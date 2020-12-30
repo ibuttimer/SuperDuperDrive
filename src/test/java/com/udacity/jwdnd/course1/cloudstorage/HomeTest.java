@@ -12,9 +12,8 @@ import static com.udacity.jwdnd.course1.cloudstorage.config.UrlFactory.*;
 public abstract class HomeTest extends AbstractHomeTest {
 
     @BeforeEach
-    public void beforeEach() {
-        SignupPage signupPage = SignupTest.getSignupPage(driver, this);
-        SignupTest.signupUsersAndTestSuccess(signupPage, this, List.of(LOGIN_USER_0, LOGIN_USER_1));
+    public void beforeEach() throws InterruptedException {
+        SignupTest.signupUsersAndTestSuccess(this, List.of(LOGIN_USER_0, LOGIN_USER_1));
     }
 
     @AfterEach

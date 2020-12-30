@@ -107,13 +107,6 @@ public abstract class LoginTest extends AbstractSeleniumTest {
         // signup standard user
         Map<String, WebElement> elements = signupUserAndTestSuccess(getSignupPage(driver, this), this, LOGIN_USER_0);
 
-        // proceed to login
-        elements.get(LOGIN_LINK_ID).click();
-
-        // make sure login is displayed
-        waitForElementByIdAndTest(LoginPage.getPageDisplayedId(), defaultWaitTimeout, true);
-
-        beforeEach();
         loginUserAndTestSuccess(loginPage, this, LOGIN_USER_0);
 
         pause();
@@ -127,13 +120,6 @@ public abstract class LoginTest extends AbstractSeleniumTest {
         SignupPage signupPage = getSignupPage(driver, this);
         Map<String, WebElement> elements = signupUserAndTestSuccess(signupPage, this, LOGIN_USER_1);
 
-        // back to login
-        signupPage.backToLogin();
-
-        // make sure login is displayed
-        waitForLoginAndTestSuccess(this);
-
-        beforeEach();
         loginUserAndTestSuccess(loginPage, this, LOGIN_USER_1);
 
         // make sure home is displayed

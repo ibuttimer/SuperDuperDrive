@@ -60,12 +60,11 @@ public abstract class NoteTest extends AbstractHomeTest {
     }
 
     @BeforeEach
-    public void beforeEach() {
+    public void beforeEach() throws InterruptedException {
         clearTable(noteService);
         clearUsers();
 
-        SignupPage signupPage = SignupTest.getSignupPage(driver, this);
-        SignupTest.signupUsersAndTestSuccess(signupPage, this, List.of(LOGIN_USER_0, LOGIN_USER_1));
+        SignupTest.signupUsersAndTestSuccess(this, List.of(LOGIN_USER_0, LOGIN_USER_1));
     }
 
     @AfterEach

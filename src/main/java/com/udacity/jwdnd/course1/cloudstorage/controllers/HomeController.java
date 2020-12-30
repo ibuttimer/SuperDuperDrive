@@ -338,6 +338,11 @@ public class HomeController extends AbstractController {
         return response;
     }
 
+    /**
+     * Redirect to error
+     * @param errorCode - error code
+     * @return
+     */
     public ResponseEntity<?> errorResponse(ErrorCode errorCode) {
         ResponseEntity<?> response = null;
         if (errorCode != ErrorCode.none) {

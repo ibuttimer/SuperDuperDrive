@@ -1,13 +1,10 @@
 package com.udacity.jwdnd.course1.cloudstorage.controllers;
 
 import com.udacity.jwdnd.course1.cloudstorage.misc.ResourceStore;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.ui.ModelMap;
 
 import java.util.List;
-
-import static com.udacity.jwdnd.course1.cloudstorage.config.UrlFactory.SIGNUP_URL;
 
 /**
  * Base controller class
@@ -20,4 +17,9 @@ public abstract class AbstractController {
         }
     }
 
+    protected void addModelAttributes(ModelMap modelMap, List<String> attributes) {
+        for (String attribute : attributes) {
+            modelMap.addAttribute(attribute, ResourceStore.getBundle().getString(attribute));
+        }
+    }
 }

@@ -5,10 +5,12 @@ import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
@@ -23,9 +25,10 @@ public class SignupController extends AbstractController {
 
     private static final List<String> MODEL_ATTRIBUTES = List.of(
             "enterFirstName", "enterLastName", "enterUsername", "enterPassword", "signUp", "backToLogin",
-            "signupSuccess0", "signupSuccess1", "signupSuccess2",
             "usernameMaxLen", "passwordMaxLen", "firstnameMaxLen", "lastnameMaxLen"
     );
+
+    private static final String SIGNUP_VIEW = "signup";
 
     private final UserService userService;
 
@@ -35,18 +38,27 @@ public class SignupController extends AbstractController {
 
     @GetMapping()
     public String signupView(Model model) {
+        return signupViewSetup(model);
+    }
+
+    private String signupViewSetup(Model model) {
         addModelAttributes(model, MODEL_ATTRIBUTES);
-        return "signup";
+        return SIGNUP_VIEW;
+    }
+
+    private String signupViewSetup(ModelMap model) {
+        addModelAttributes(model, MODEL_ATTRIBUTES);
+        return SIGNUP_VIEW;
     }
 
     /**
      * Sign up the specified user
      * @param user - user details
-     * @param model - model
+     * @param modelMap - model
      * @return
      */
     @PostMapping()
-    public String signupUser(@ModelAttribute User user, Model model) {
+    public ModelAndView signupUser(@ModelAttribute User user, ModelMap modelMap) {
         String signupError = null;
 
         if (!userService.isUsernameAvailable(user.getUsername())) {
@@ -58,13 +70,18 @@ public class SignupController extends AbstractController {
             }
         }
 
+        ModelAndView modelAndView;
         if (signupError == null) {
-            model.addAttribute("signupSuccess", true);
+            modelMap.addAttribute("success", true);
+
+            modelAndView = new ModelAndView("redirect:/"+LoginController.loginViewSetup(this, modelMap), modelMap);
         } else {
             signupError = ResourceStore.getBundle().getString(signupError);
-            model.addAttribute("signupError", signupError);
+            modelMap.addAttribute("signupError", signupError);
+
+            modelAndView = new ModelAndView(signupViewSetup(modelMap), modelMap);
         }
 
-        return signupView(model);
+        return modelAndView;
     }
 }

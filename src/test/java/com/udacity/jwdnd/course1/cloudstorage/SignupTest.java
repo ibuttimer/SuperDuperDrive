@@ -1,6 +1,7 @@
 package com.udacity.jwdnd.course1.cloudstorage;
 
 import com.udacity.jwdnd.course1.cloudstorage.misc.ElementSpec;
+import com.udacity.jwdnd.course1.cloudstorage.model.LoginPage;
 import com.udacity.jwdnd.course1.cloudstorage.model.SignupPage;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
@@ -13,6 +14,7 @@ import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.udacity.jwdnd.course1.cloudstorage.model.AbstractPage.ERROR_MSG_ID;
 import static com.udacity.jwdnd.course1.cloudstorage.model.AbstractPage.SUCCESS_MSG_ID;
@@ -35,8 +37,9 @@ public abstract class SignupTest extends AbstractSeleniumTest {
     private UserService userService;
 
 
-    public static SignupPage getSignupPage(WebDriver driver, AbstractSeleniumTest test) {
+    public static SignupPage getSignupPage(WebDriver driver, AbstractSeleniumTest test) throws InterruptedException {
         driver.get(test.getUrl(SIGNUP_URL));
+        test.pause("defaultLoadTimeout");
         return new SignupPage(driver);
     }
 
@@ -52,18 +55,20 @@ public abstract class SignupTest extends AbstractSeleniumTest {
     public static Map<String, WebElement> signupUserAndTestSuccess(SignupPage signupPage, AbstractSeleniumTest test, User user) {
         return signupUserAndTest(signupPage, test,
                 SignupPage.setListTimeouts(
-                    List.of(
-                        ElementSpec.of(SUCCESS_MSG_ID),          // check for success message
-                        ElementSpec.ofResource(SIGNUP_SUCCESS_0_ID, "signupSuccess0", TextCheck.STARTS_WITH),  // check for continue to login
-                        ElementSpec.ofResource(LOGIN_LINK_ID, "signupSuccess1", TextCheck.EQUALS),
-                        ElementSpec.ofResource(SIGNUP_SUCCESS_2_ID, "signupSuccess2", TextCheck.ENDS_WITH)),
+                    concatLists(
+                            LoginPage.getDisplaySuccessChecks(test.defaultWaitTimeout),
+                            List.of(
+                                ElementSpec.ofResource(SUCCESS_MSG_ID, "signupSuccess", TextCheck.EQUALS)  // check for success message
+                            )
+                    ),
                     test.defaultWaitTimeout),
                 user
         );
     }
 
-    public static void signupUsersAndTestSuccess(SignupPage signupPage, AbstractSeleniumTest test, List<User> users) {
+    public static void signupUsersAndTestSuccess(AbstractSeleniumTest test, List<User> users) throws InterruptedException {
         for (User user : users) {
+            SignupPage signupPage = SignupTest.getSignupPage(driver, test);
             signupUserAndTestSuccess(signupPage, test, user);
         }
     }
@@ -79,7 +84,7 @@ public abstract class SignupTest extends AbstractSeleniumTest {
     }
 
     @BeforeEach
-    public void beforeEach() {
+    public void beforeEach() throws InterruptedException {
         signupPage = getSignupPage(driver, this);
     }
 
@@ -90,20 +95,31 @@ public abstract class SignupTest extends AbstractSeleniumTest {
         signupPage.testElements();
 
         // sign up & check success
+        List<User> existingUsers = userService.getAll();
+
         signupUserAndTestSuccess(signupPage, this, SIGNUP_USER);
 
         List<User> users = userService.getAll();
-        assertEquals(1, users.size());
-        User userDb = users.get(0);
+        assertEquals(existingUsers.size() + 1, users.size());
 
+        AtomicReference<User> atomicUser = new AtomicReference<>(null);
+        users.stream()
+                .filter(u -> !existingUsers.contains(u))
+                .findFirst()
+                .ifPresent(atomicUser::set);
+
+        User userDb = atomicUser.get();
+        assertNotNull(userDb);
         assertNotNull(userDb.getUserid());
         assertTrue(StringUtils.isNotBlank(userDb.getSalt()));
         assertTrue(StringUtils.isNotBlank(userDb.getPassword()));
 
-        User user = User.of(userDb.getUserid(), SIGNUP_USER.getUsername(), userDb.getSalt(), userDb.getPassword(), SIGNUP_USER.getFirstname(), SIGNUP_USER.getLastname());
+        User user = User.of(userDb.getUserid(), SIGNUP_USER.getUsername(), userDb.getSalt(), userDb.getPassword(),
+                SIGNUP_USER.getFirstname(), SIGNUP_USER.getLastname());
         assertEquals(user, userDb);
 
         // sign up same user & check failure
+        signupPage = getSignupPage(driver, this);
         signupUserAndTestFailure(signupPage, this, SIGNUP_USER);
 
         pause();

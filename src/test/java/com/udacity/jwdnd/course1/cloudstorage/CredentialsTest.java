@@ -3,7 +3,6 @@ package com.udacity.jwdnd.course1.cloudstorage;
 import com.udacity.jwdnd.course1.cloudstorage.controllers.HomeController;
 import com.udacity.jwdnd.course1.cloudstorage.controllers.misc.Action;
 import com.udacity.jwdnd.course1.cloudstorage.controllers.misc.Result;
-import com.udacity.jwdnd.course1.cloudstorage.misc.MessageText;
 import com.udacity.jwdnd.course1.cloudstorage.model.*;
 import com.udacity.jwdnd.course1.cloudstorage.services.CredentialsService;
 import org.apache.commons.compress.utils.Lists;
@@ -65,12 +64,11 @@ public abstract class CredentialsTest extends AbstractHomeTest {
     }
 
     @BeforeEach
-    public void beforeEach() {
+    public void beforeEach() throws InterruptedException {
         clearTable(credentialsService);
         clearUsers();
 
-        SignupPage signupPage = SignupTest.getSignupPage(driver, this);
-        SignupTest.signupUsersAndTestSuccess(signupPage, this, List.of(LOGIN_USER_0, LOGIN_USER_1));
+        SignupTest.signupUsersAndTestSuccess(this, List.of(LOGIN_USER_0, LOGIN_USER_1));
     }
 
     @AfterEach

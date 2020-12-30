@@ -12,6 +12,7 @@
         <div class="container justify-content-center w-25 p-3" style="background-color: #eeeeee; margin-top: 5em;">
             <h1 id="heading" class="display-5" th:text="${logIn}"></h1>
             <form action="#" th:action="@{/login}" method="POST">
+                <div id="success-msg" th:if="${param.success}" class="alert alert-dark" th:text="${signupSuccess}"></div>
                 <div id="error-msg" th:if="${param.error}" class="alert alert-danger" th:text="${invalidCredentials}"></div>
                 <div id="logout-msg" th:if="${param.logout}" class="alert alert-dark" th:text="${loggedOut}"></div>
                 <div class="form-group">
